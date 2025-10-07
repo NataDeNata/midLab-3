@@ -1,0 +1,31 @@
+<h1 class="text-center">TASK LIST</h1>
+<br>
+<table class="table table-bordered text-center">
+   <tr>
+    <th>Number</th>
+    <th>Tasks</th>
+    <th>Completed</th>
+   </tr>
+    <tr *ngFor="let task of tasks; let i = index">
+     <td>{{ i + 1 }}</td>
+     <td [ngClass]="{'completed': task.completed}">{{ task.text }}</td>
+     <td><input type="checkbox" [checked]="task.completed" (change)="toggleTaskCompletion(i)"></td>
+     <td *ngIf="task.completed">
+        <h2 style="color: green;" class="btn">Completed</h2>
+     </td>
+     <td>
+        <button class="delBtn" onclick="alert('Task Deleted Successfully')" (click)="deleteTask(i)">Delete</button>
+     </td>
+     <tr><strong>Total Tasks: {{getTotalTasks()}}</strong>
+        <hr>
+    </tr>
+    <tr>Total Completed Tasks: </tr>
+     <tr *ngFor="let task of tasks; let i = index">
+        <td *ngIf="task.completed">
+       <strong>Task:</strong>{{task.text}} <strong>Task Number:</strong> {{i + 1}}
+        </td>
+     </tr>
+</table>
+    <a class="text-center btn" *ngIf="tasks.length === 0">
+        <p>No tasks available. Please add some tasks!</p>
+     </a>

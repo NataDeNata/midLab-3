@@ -1,0 +1,15 @@
+.delBtn{
+    background-color: rgb(221, 70, 70);
+    color: white;
+     box-shadow: none;
+     border-radius: 10%;
+}
+.delBtn:hover{
+    background-color: rgb(122, 26, 26);
+}
+hr{
+    min-width: 500%;
+}
+.table-bordered{
+min-width: 100%;
+}
