@@ -1,0 +1,56 @@
+<h1 class="text-center">TASK LIST</h1>
+<br>
+<div class="filter-controls text-center">
+  <button id="allFilter" (click)="setFilter('all')" [disabled]="filter === 'all'">All</button>
+  <button id="activeFilter" (click)="setFilter('active')" [disabled]="filter === 'active'">Active</button>
+  <button id="completedFilter" (click)="setFilter('completed')" [disabled]="filter === 'completed'">Completed</button>
+</div>
+<br>
+<table class="table table-bordered text-center">
+   <tr>
+    <th>ID</th>
+    <th>Description</th> 
+   <th>Is Completed</th>
+    <th>Created At</th>
+    <th>Actions</th>
+   </tr>
+  <tr *ngFor="let task of tasks">
+  <td>{{task.id}}</td>
+  <td>
+    <ng-container *ngIf="editingIndex === task.id; else viewMode">
+      <input
+        [(ngModel)]="editedText"
+        (keydown.enter)="saveEdit(task.id)"
+        (blur)="saveEdit(task.id)"
+        autofocus
+      />
+    </ng-container>
+    <ng-template #viewMode>
+      <span [ngClass]="{'completed': task.completed}" (click)="startEdit(task.id)" style="cursor:pointer;">
+        {{task.text}}
+      </span>
+    </ng-template>
+  </td>
+  <td>
+    <input
+      type="checkbox"
+      [checked]="task.completed"
+      (change)="toggleTaskCompletion(task.id)"
+    />
+  </td>
+  <td>{{task.createdAt | date:'short'}}</td>
+  <td>
+    <button class="delBtn" (click)="deleteTask(task.id)">Delete</button>
+  </td>
+</tr>
+</table>
+<strong>Total Tasks: {{getTotalTasks()}}</strong>
+<hr>
+<strong>Completed Tasks: {{getCompleteTasks()}}</strong>
+<br><br>
+<h4>Hints:</h4>
+<a class="text-center btn" routerLink="/add-task">Click the description to edit tasks!</a>
+<br><br>
+<a class="text-center btn" *ngIf="tasks.length === 0">
+  <p>No tasks available. Please add some tasks!</p>
+</a>
