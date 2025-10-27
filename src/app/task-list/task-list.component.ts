@@ -1,42 +1,56 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TaskService, Task } from '../service/TaskService';
+import { TaskService, Task, TaskFilter } from '../service/TaskService';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-task-list',
-  standalone: true,              // ✅ if you’re using standalone components
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.css']   // ✅ fixed plural
+  styleUrl: './task-list.component.css'
 })
 export class TaskListComponent {
   tasks: Task[] = [];
-  currentFilter: 'all' | 'active' | 'completed' = 'all';
+  editingIndex: number | null = null;
+  editedText: string = '';
+   filter: TaskFilter = 'all';
 
   constructor(private taskService: TaskService) {
-    this.loadTasks();
+    this.tasks = this.taskService.getTasks();
+    this.taskService.getTotalTasks();
+    this.taskService.filteredTasks$.subscribe(tasks => {
+      this.tasks = tasks;
+    });
   }
 
-  // ✅ centralize task loading with filter
-  loadTasks(): void {
-    this.tasks = this.taskService.getFilteredTasks(this.currentFilter);
+
+  setFilter(filter: TaskFilter) {
+    this.filter = filter;
+    this.taskService.setFilter(filter);
   }
 
-  setFilter(filter: 'all' | 'active' | 'completed'): void {
-    this.currentFilter = filter;
-    this.loadTasks();
-  }
+ startEdit(id: number) {
+  this.editingIndex = id;
+  const task = this.tasks.find(t => t.id === id);
+  this.editedText = task ? task.text : '';
+}
 
-  toggleTaskCompletion(index: number): void {
-    this.taskService.toggleTaskCompletion(index);
-    this.loadTasks();   // ✅ refresh after toggle
+saveEdit(id: number) {
+  if (this.editedText.trim()) {
+    this.taskService.updateTask(id, this.editedText);
   }
+  this.editingIndex = null;
+  this.editedText = '';
+}
 
-  deleteTask(index: number): void {
-    this.taskService.deleteTasks(index);
-    this.loadTasks();   // ✅ refresh after delete
-  }
+cancelEdit() {
+  this.editingIndex = null;
+  this.editedText = '';
+}
 
+toggleTaskCompletion(id: number) {
+  this.taskService.toggleTaskCompletion(id);
+}
   getTotalTasks(): number {
     return this.taskService.getTotalTasks();
   }
