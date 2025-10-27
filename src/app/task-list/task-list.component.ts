@@ -1,56 +1,51 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TaskService, Task, TaskFilter } from '../service/TaskService';
 import { FormsModule } from '@angular/forms';
+import { TaskService } from '../service/TaskService';
+import { Task } from '../service/TaskModel';
+import { ɵEmptyOutletComponent } from "@angular/router";
 
 @Component({
   selector: 'app-task-list',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './task-list.component.html',
-  styleUrl: './task-list.component.css'
+  styleUrls: ['./task-list.component.css']
 })
 export class TaskListComponent {
   tasks: Task[] = [];
-  editingIndex: number | null = null;
-  editedText: string = '';
-   filter: TaskFilter = 'all';
+  currentFilter: 'all' | 'active' | 'completed' = 'all';
+  newTask: string = '';
 
   constructor(private taskService: TaskService) {
-    this.tasks = this.taskService.getTasks();
-    this.taskService.getTotalTasks();
-    this.taskService.filteredTasks$.subscribe(tasks => {
-      this.tasks = tasks;
-    });
+    this.loadTasks();
   }
 
-
-  setFilter(filter: TaskFilter) {
-    this.filter = filter;
-    this.taskService.setFilter(filter);
+  loadTasks(): void {
+    this.tasks = this.taskService.getFilteredTasks(this.currentFilter);
   }
 
- startEdit(id: number) {
-  this.editingIndex = id;
-  const task = this.tasks.find(t => t.id === id);
-  this.editedText = task ? task.text : '';
-}
-
-saveEdit(id: number) {
-  if (this.editedText.trim()) {
-    this.taskService.updateTask(id, this.editedText);
+  setFilter(filter: 'all' | 'active' | 'completed'): void {
+    this.currentFilter = filter;
+    this.loadTasks();
   }
-  this.editingIndex = null;
-  this.editedText = '';
-}
 
-cancelEdit() {
-  this.editingIndex = null;
-  this.editedText = '';
-}
+  addTask(): void {
+    this.taskService.addTask(this.newTask);
+    this.newTask = '';
+    this.loadTasks();
+  }
 
-toggleTaskCompletion(id: number) {
-  this.taskService.toggleTaskCompletion(id);
-}
+  toggleTaskCompletion(index: number): void {
+    this.taskService.toggleTaskCompletion(index);
+    this.loadTasks();
+  }
+
+  deleteTask(index: number): void {
+    this.taskService.deleteTask(index);
+    this.loadTasks();
+  }
+
   getTotalTasks(): number {
     return this.taskService.getTotalTasks();
   }

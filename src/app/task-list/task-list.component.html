@@ -1,27 +1,27 @@
 <h1 class="text-center">TASK LIST</h1>
 <br>
 
+<!-- Add Task -->
+<div class="text-center mb-3">
+  <input [(ngModel)]="newTask" placeholder="Enter new task" class="form-control d-inline w-50">
+  <button class="btn btn-primary ms-2" (click)="addTask()">Add</button>
+</div>
+
 <!-- Filter Buttons -->
 <div class="task-controls text-center mb-3">
   <button class="btn btn-outline-primary me-2"
           (click)="setFilter('all')"
-          [class.active]="currentFilter === 'all'">
-    All
-  </button>
+          [class.active]="currentFilter === 'all'">All</button>
   <button class="btn btn-outline-primary me-2"
           (click)="setFilter('active')"
-          [class.active]="currentFilter === 'active'">
-    Active
-  </button>
+          [class.active]="currentFilter === 'active'">Active</button>
   <button class="btn btn-outline-primary"
           (click)="setFilter('completed')"
-          [class.active]="currentFilter === 'completed'">
-    Completed
-  </button>
+          [class.active]="currentFilter === 'completed'">Completed</button>
 </div>
 
 <!-- Task Table -->
-<table class="table table-bordered text-center">
+<table class="table table-bordered text-center" *ngIf="tasks.length > 0">
   <thead>
     <tr>
       <th>ID</th>
@@ -31,15 +31,12 @@
       <th>Action</th>
     </tr>
   </thead>
-
   <tbody>
     <tr *ngFor="let task of tasks; let i = index">
       <td>{{ task.id }}</td>
       <td [ngClass]="{ 'completed': task.completed }">{{ task.text }}</td>
       <td>
-        <input type="checkbox"
-               [checked]="task.completed"
-               (change)="toggleTaskCompletion(i)">
+        <input type="checkbox" [checked]="task.completed" (change)="toggleTaskCompletion(i)">
       </td>
       <td>
         <span *ngIf="task.completed" class="badge bg-success">Completed</span>
@@ -70,12 +67,13 @@
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngFor="let task of tasks">
+     <ng-container *ngFor="let task of tasks">
         <tr *ngIf="task.completed">
           <td>{{ task.id }}</td>
           <td>{{ task.text }}</td>
         </tr>
       </ng-container>
+
     </tbody>
   </table>
 </div>
