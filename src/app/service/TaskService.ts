@@ -1,10 +1,20 @@
+<<<<<<< HEAD
 import { Injectable } from '@angular/core';
 import { Task } from './TaskModel';
+=======
+import { Injectable } from "@angular/core";
+
+export interface Task {
+  text: string;
+  completed: boolean;
+}
+>>>>>>> 2d055a602cad83090f0605afe0f7904ffee1d1c8
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
+<<<<<<< HEAD
   private taskList: Task[] = [];
 
   addTask(task: string): void {
@@ -19,13 +29,31 @@ export class TaskService {
 
   deleteTask(index: number): void {
     this.taskList.splice(index, 1);
+=======
+  taskList: Task[] = [];
+
+  addTask(task: string): void {
+    if (task.trim() !== '') {
+      this.taskList.push({ text: task, completed: false });
+    }
+  }
+
+  deleteTasks(index: number): void{
+      this.taskList.splice(index, 1);
+>>>>>>> 2d055a602cad83090f0605afe0f7904ffee1d1c8
   }
 
   getTasks(): Task[] {
     return [...this.taskList];
   }
+<<<<<<< HEAD
 
   toggleTaskCompletion(index: number): void {
+=======
+  
+
+  toggleTaskCompletion(index: number): void{
+>>>>>>> 2d055a602cad83090f0605afe0f7904ffee1d1c8
     if (index >= 0 && index < this.taskList.length) {
       this.taskList[index].completed = !this.taskList[index].completed;
     }
@@ -34,6 +62,7 @@ export class TaskService {
   getTotalTasks(): number {
     return this.taskList.length;
   }
+<<<<<<< HEAD
 
   getTotalCompletedTasks(): number {
     return this.taskList.filter(task => task.completed).length;
@@ -48,5 +77,13 @@ export class TaskService {
       default:
         return [...this.taskList];
     }
+=======
+  getTotalCompletedTasks(index: number){
+    let completedTask = 0;
+    if(this.taskList[index].completed){
+        completedTask++;
+    }
+     return completedTask;
+>>>>>>> 2d055a602cad83090f0605afe0f7904ffee1d1c8
   }
 }
